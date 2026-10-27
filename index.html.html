@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>_clear 投教合规助手</title>
+<style>
+:root{
+  --bg:#F5F5F7; --card:#FFFFFF; --text:#1D1D1F; --secondary:#6E6E73; --tertiary:#8E8E93;
+  --sep:rgba(60,60,67,.12); --blue:#007AFF; --green:#34C759; --orange:#FF9500; --red:#FF3B30;
+  --green-bg:rgba(52,199,89,.13); --orange-bg:rgba(255,149,0,.15); --red-bg:rgba(255,59,48,.12); --blue-bg:rgba(0,122,255,.11);
+  --shadow:0 18px 50px rgba(0,0,0,.10); --radius:22px;
+}
+*{box-sizing:border-box} html,body{margin:0} body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Microsoft YaHei",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+button{font:inherit} .stage{min-height:100vh;display:flex;align-items:center;justify-content:center;gap:28px;padding:28px}
+.phone{width:min(430px,100%);height:min(880px,100vh - 56px);min-height:640px;background:var(--card);border-radius:44px;box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column;border:1px solid rgba(255,255,255,.7)}
+.statusbar{height:18px;background:var(--card)}
+.navtitle{padding:8px 20px 12px;background:rgba(255,255,255,.92);backdrop-filter:saturate(180%) blur(18px);border-bottom:1px solid var(--sep)}
+.navtitle h1{margin:0;font-size:20px;letter-spacing:-.02em}.navtitle p{margin:3px 0 0;color:var(--secondary);font-size:12px}
+.scroll{flex:1;overflow:auto;overscroll-behavior:contain}.panel{display:none;padding:16px 16px 92px}.panel.active{display:block}
+.hero{margin:2px 2px 14px;padding:14px;border-radius:20px;background:linear-gradient(135deg,#FFFFFF,#F2F6FB);border:1px solid var(--sep)}
+.hero b{font-size:15px}.hero p{margin:6px 0 0;color:var(--secondary);font-size:12px;line-height:1.5}
+.msg{max-width:84%;padding:12px 14px;border-radius:22px;line-height:1.55;font-size:15px;margin:12px 0;white-space:pre-wrap;box-shadow:0 1px 1px rgba(0,0,0,.03)}
+.user{margin-left:auto;background:var(--blue);color:#fff;border-bottom-right-radius:8px}
+.bot{background:#fff;border:1px solid var(--sep);border-bottom-left-radius:8px}
+.msg-actions{display:flex;gap:12px;margin-top:9px;padding-top:9px;border-top:1px solid var(--sep)}
+.link{border:0;background:none;color:var(--blue);font-size:13px;font-weight:600;padding:0}.link:active{opacity:.6}
+.sourcebox{display:none;margin-top:10px;padding:11px;border-radius:15px;background:#FAFAFC;border:1px solid var(--sep);font-size:12px;color:var(--secondary);line-height:1.55}.sourcebox.open{display:block}
+.sourcebox b{color:var(--text)}.tag{display:inline-flex;align-items:center;border-radius:999px;padding:3px 8px;font-size:11px;font-weight:700;margin-right:6px}.tag.ok{background:var(--green-bg);color:#248A3D}.tag.warn{background:var(--orange-bg);color:#B26A00}.tag.danger{background:var(--red-bg);color:#D70015}.tag.info{background:var(--blue-bg);color:#0066CC}
+.chips{display:flex;gap:8px;overflow:auto;padding:2px 0 12px}.chip{flex:0 0 auto;border:1px solid var(--sep);background:#fff;border-radius:999px;padding:8px 11px;color:var(--secondary);font-size:12px}.chip:active{background:#EFEFf4}
+.composer{position:sticky;bottom:58px;z-index:6;background:rgba(255,255,255,.94);backdrop-filter:saturate(180%) blur(18px);border-top:1px solid var(--sep);padding:10px 12px;display:flex;gap:8px}
+.composer input{flex:1;border:1px solid var(--sep);background:#F2F2F7;border-radius:999px;padding:12px 14px;font-size:15px;outline:none}.composer input:focus{border-color:rgba(0,122,255,.45);background:#fff}
+.send{border:0;border-radius:999px;padding:0 16px;background:var(--text);color:#fff;font-weight:700}.send:active{transform:scale(.98)}
+.tabbar{position:sticky;bottom:0;z-index:7;display:grid;grid-template-columns:repeat(4,1fr);background:rgba(255,255,255,.94);backdrop-filter:saturate(180%) blur(18px);border-top:1px solid var(--sep);padding:8px 6px calc(8px + env(safe-area-inset-bottom))}
+.tab{border:0;background:none;color:var(--tertiary);font-size:11px;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:3px}.tab span{font-size:20px;line-height:1}.tab.active{color:var(--blue)}
+.card{background:var(--card);border:1px solid var(--sep);border-radius:var(--radius);padding:14px;margin-bottom:12px;box-shadow:0 8px 24px rgba(0,0,0,.04)}.card h3{margin:0 0 8px;font-size:16px;letter-spacing:-.01em}.muted{color:var(--secondary);font-size:12px;line-height:1.5}.row{display:flex;justify-content:space-between;align-items:center;gap:10px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.kpi{background:#fff;border:1px solid var(--sep);border-radius:18px;padding:13px}.kpi b{display:block;font-size:25px;letter-spacing:-.03em}.kpi span{color:var(--secondary);font-size:12px}
+textarea,input[type=text],select{width:100%;border:1px solid var(--sep);border-radius:14px;padding:11px 12px;background:#F2F2F7;font-size:14px;outline:none}textarea:focus,input[type=text]:focus,select:focus{background:#fff;border-color:rgba(0,122,255,.45)}
+.btn{border:0;border-radius:14px;padding:10px 13px;background:var(--text);color:#fff;font-weight:700}.btn.sub{background:var(--blue)}.btn.ghost{background:#F2F2F7;color:var(--text)}.btn.small{padding:7px 10px;font-size:12px;border-radius:999px}
+.desk{width:370px;position:sticky;top:28px;display:none}.desk .card{padding:16px}.desk h2{margin:0 0 12px;font-size:22px;letter-spacing:-.03em}.listitem{display:flex;gap:10px;align-items:flex-start;padding:11px 0;border-top:1px solid var(--sep)}.listitem:first-child{border-top:0}.dot{width:9px;height:9px;border-radius:50%;margin-top:5px;flex:0 0 auto}.dot.warn{background:var(--orange)}.dot.danger{background:var(--red)}.dot.info{background:var(--blue)}.dot.ok{background:var(--green)}
+.timeline{position:relative;padding-left:18px}.timeline:before{content:"";position:absolute;left:5px;top:8px;bottom:8px;width:2px;background:var(--sep)}.tl{position:relative;margin:0 0 14px}.tl:before{content:"";position:absolute;left:-17px;top:4px;width:10px;height:10px;border-radius:50%;background:#fff;border:2px solid var(--blue)}
+.toast{position:absolute;left:50%;bottom:120px;transform:translateX(-50%) translateY(12px);background:rgba(29,29,31,.92);color:#fff;border-radius:999px;padding:9px 14px;font-size:12px;opacity:0;pointer-events:none;transition:.2s}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media (min-width: 1080px){.desk{display:block}}
+@media (max-width: 520px){.stage{padding:0}.phone{width:100%;height:100vh;min-height:100vh;border-radius:0;border:0;box-shadow:none}.desk{display:none}.composer{bottom:58px}}
+</style>
+</head>
+<body>
+<div class="stage">
+  <main class="phone" id="phone">
+    <div class="statusbar"></div>
+    <header class="navtitle"><h1>投教合规助手</h1><p>不荐股 · 不预测 · 来源可追溯</p></header>
+    <div class="scroll">
+      <section id="home" class="panel active">
+        <div class="hero"><b>先问规则与概念，不替你决策</b><p>我可以解释费用、适当性、交易确认等规则；涉及买卖、预测、收益承诺时会拦截或转人工。</p></div>
+        <div class="chips">
+          <button class="chip">基金赎回费怎么算</button><button class="chip">什么是基金定投</button><button class="chip">明天A股会涨吗</button><button class="chip">私募合格投资者认定</button>
+        </div>
+        <div id="chatBox"></div>
+      </section>
+
+      <section id="kb" class="panel">
+        <div class="card"><h3>新增知识</h3><p class="muted">默认进入“待审核”，审核上线后才会被检索。正文不得包含收益承诺或具体买卖建议。</p>
+          <input id="newTitle" type="text" placeholder="知识标题" />
+          <div style="height:8px"></div><textarea id="newBody" rows="4" placeholder="客观、可核验的答案正文"></textarea>
+          <div style="height:8px"></div>
+          <div class="row"><select id="newRisk"><option value="low">低风险</option><option value="mid">中风险</option><option value="high">高风险</option></select><button class="btn sub" id="addKb">提交审核</button></div>
+        </div>
+        <div id="kbList"></div>
+      </section>
+
+      <section id="ops" class="panel"><div class="grid2">
+          <div class="kpi"><b id="kAnswer">0</b><span>合规回答</span></div><div class="kpi"><b id="kRefuse">0</b><span>合规拦截</span></div>
+          <div class="kpi"><b id="kHandoff">0</b><span>转人工</span></div><div class="kpi"><b id="kGap">0</b><span>知识缺口</span></div>
+        </div><div style="height:12px"></div><div class="card"><h3>处置队列</h3><div id="alerts"></div></div></section>
+
+      <section id="ver" class="panel"><div class="card"><h3>版本闭环</h3><p class="muted">未答聚类 → 草稿 → 合规审核 → 上线 → 回归。</p></div><div class="timeline" id="verList"></div></section>
+    </div>
+
+    <div class="composer"><input id="q" placeholder="输入问题，例如：基金赎回费怎么算" /><button class="send" id="send">发送</button></div>
+    <nav class="tabbar">
+      <button class="tab active" data-tab="home"><span>⌘</span>问答</button><button class="tab" data-tab="kb"><span>▤</span>知识</button><button class="tab" data-tab="ops"><span>◌</span>告警</button><button class="tab" data-tab="ver"><span>⇄</span>版本</button>
+    </nav>
+    <div class="toast" id="toast"></div>
+  </main>
+
+  <aside class="desk">
+    <h2>运营后台</h2>
+    <div class="grid2">
+      <div class="kpi"><b id="cKAnswer">0</b><span>合规回答</span></div><div class="kpi"><b id="cKRefuse">0</b><span>合规拦截</span></div>
+      <div class="kpi"><b id="cKHandoff">0</b><span>转人工</span></div><div class="kpi"><b id="cKGap">0</b><span>知识缺口</span></div>
+    </div>
+    <div style="height:12px"></div>
+    <div class="card"><h3>待处理告警</h3><div id="cAlerts"></div></div>
+    <div class="card"><h3>最近版本动作</h3><div class="timeline" id="cVerList"></div></div>
+  </aside>
+</div>
+
+<script>
+const seedKB = [
+ {id:'KB-001', title:'基金赎回费如何计算', version:'v1.3', effective:'2026-10-01', source:'产品规则中心/费用规则', risk:'low', status:'已上线', tags:'基金 赎回费 费用 持有期', body:'赎回费通常按持有期限分档计算，持有越短费率可能越高；具体以基金合同、招募说明书和销售机构页面公示为准。示例结构：赎回费=赎回金额×对应费率。'},
+ {id:'KB-002', title:'什么是基金定投', version:'v1.0', effective:'2026-08-15', source:'投教内容库/基础概念', risk:'low', status:'已上线', tags:'定投 基金 投资 方法', body:'定投是按固定周期、固定金额申购基金的方式，有助于分散买入时点，但不保证收益，也不等于低风险。是否适合需结合风险承受能力、资金使用期限和产品风险等级。'},
+ {id:'KB-003', title:'风险测评与适当性提示', version:'v2.1', effective:'2026-09-20', source:'合规话术库/适当性', risk:'mid', status:'已上线', tags:'风险测评 适当性 匹配', body:'购买产品前通常需完成风险承受能力评估，并查看产品风险等级。若客户风险等级低于产品风险等级，应提示不匹配，必要时要求确认或拒绝销售。'},
+ {id:'KB-004', title:'为什么不能承诺收益', version:'v1.2', effective:'2026-07-11', source:'合规红线/宣传规范', risk:'high', status:'已上线', tags:'收益承诺 保本 稳赚 合规', body:'不得承诺保本、保收益或使用“稳赚”“必涨”“无风险”等表述。历史业绩不代表未来表现，市场有风险，投资需谨慎。'},
+ {id:'KB-005', title:'交易时间以公告为准', version:'v1.0', effective:'2026-06-01', source:'产品规则中心/交易规则', risk:'low', status:'已上线', tags:'交易时间 申购 赎回 确认', body:'基金申购赎回确认、资金到账时间以销售机构公告、基金合同和登记结算规则为准；节假日和巨额赎回可能导致延迟。'}
+];
+const refusal = '这个问题我不能提供个性化投资建议或市场预测。可以帮你了解相关概念、风险因素、查询路径和适当性要求。';
+const rules = [
+ {re:/(推荐|买哪只|买哪支|值得买|抄底|满仓|加杠杆)/, type:'荐股/诱导交易', level:'high'},
+ {re:/(明天|下周|未来|会不会涨|会不会跌|涨跌|走势|预测)/, type:'市场预测', level:'high'},
+ {re:/(稳赚|保本|保收益|必涨|无风险|翻倍|回本)/, type:'收益承诺/淡化风险', level:'high'},
+ {re:/(帮我操作|替我下单|现在买入|卖出|止损位|目标价)/, type:'代客决策/交易执行', level:'high'}
+];
+const $ = id => document.getElementById(id);
+const esc = s => String(s??'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+let KB = JSON.parse(localStorage.getItem('demo_kb_v2') || 'null') || seedKB;
+let logs = JSON.parse(localStorage.getItem('demo_logs_v2') || '[]');
+let versions = JSON.parse(localStorage.getItem('demo_versions_v2') || '[]');
+if(!versions.length) versions = KB.map(k=>({doc:k.id, title:k.title, action:'已上线', note:'种子知识入库', time:'2026-10-01 09:00'}));
+const save = () => {localStorage.setItem('demo_kb_v2', JSON.stringify(KB)); localStorage.setItem('demo_logs_v2', JSON.stringify(logs)); localStorage.setItem('demo_versions_v2', JSON.stringify(versions));};
+const liveKB = () => KB.filter(k => (k.status || '已上线') === '已上线');
+const SYN = {'怎么':'如何','怎样':'如何','咋样':'如何','咋':'如何','算法':'计算','如何算':'如何计算','怎样算':'如何计算','怎么算':'如何计算','多少':'如何计算','啥是':'什么是','是什么':'什么是'};
+const norm = s => {let x=(s||'').toLowerCase().replace(/[？?。，,！!；;：:]/g,' '); Object.keys(SYN).forEach(a=>{x=x.split(a).join(SYN[a])}); return x;};
+function terms(s){const x=norm(s); const out=new Set(); x.split(/\s+/).filter(Boolean).forEach(w=>{out.add(w); for(let i=0;i<w.length-1;i++) out.add(w.slice(i,i+2));}); return [...out];}
+const score = (q,k) => {const qs=new Set(terms(q)); if(!qs.size) return 0; const ks=new Set(terms(k.title+' '+k.tags+' '+k.body)); let hit=0; qs.forEach(t=>{ if(ks.has(t)) hit++; }); let base=hit/qs.size; const core=norm(q).replace(/(如何|怎么|怎样|计算|算|什么|介绍|一下|请问|请问一下)/g,'').trim(); const exact=(core.length>=2 && (norm(k.title).includes(core)||norm(k.tags).includes(core))) ? 0.25 : 0; return Math.min(1, base+exact);};
+const riskTag = r => r==='high'?'<span class="tag danger">高风险</span>':r==='mid'?'<span class="tag warn">中风险</span>':'<span class="tag ok">低风险</span>';
+const statusTag = s => s==='已上线'?'<span class="tag ok">已上线</span>':s==='待审核'?'<span class="tag warn">待审核</span>':'<span class="tag info">'+esc(s)+'</span>';
+function toast(msg){const t=$('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(t._timer); t._timer=setTimeout(()=>t.classList.remove('show'),1600);}
+function sourceHTML(title, lines, cls='info'){return `<button class="link src-toggle">查看来源与风险</button><div class="sourcebox"><span class="tag ${cls}">${esc(title)}</span><br>${lines}</div>`;}
+function addMsg(text, who, extra=''){const box=$('chatBox'); const d=document.createElement('div'); d.className='msg '+who; d.innerHTML=esc(text)+(who==='bot'?`<div class="msg-actions">${extra}</div>`:''); box.appendChild(d); box.parentElement.scrollTop=1e9;}
+document.addEventListener('click', e=>{const b=e.target.closest('.src-toggle'); if(!b) return; const box=b.nextElementSibling; box.classList.toggle('open'); b.textContent=box.classList.contains('open')?'收起来源与风险':'查看来源与风险';});
+function answer(q){
+  const violation = rules.find(r=>r.re.test(q));
+  if(violation){
+    logs.push({kind:'violation', q, rule:violation.type, level:violation.level, time:Date.now()}); save();
+    const lines=`命中规则：<b>${esc(violation.type)}</b><br>依据：KB-004｜合规红线/宣传规范｜v1.2｜生效 2026-07-11<br>提示：已切换为安全拒答，不生成投资建议。`;
+    addMsg(refusal,'bot',sourceHTML('合规拦截',lines,'danger')+'<button class="link" onclick="toast(\'已创建人工复核工单\')">转人工复核</button>');
+    return;
+  }
+  const ranked = liveKB().map(k=>({k,s:score(q,k)})).sort((a,b)=>b.s-a.s).slice(0,3);
+  const best = ranked[0];
+  if(!best || best.s < 0.28){
+    logs.push({kind:'gap', q, time:Date.now()}); save();
+    const lines=`检索置信度：<b>${best?best.s.toFixed(2):'0.00'}</b><br>证据：不足，未生成关键事实<br>动作：进入未答聚类 + 建议人工介入`;
+    addMsg('我还不能可靠回答这个问题，已记录为知识缺口。你可以换个更具体的规则/概念问题，或转人工补充知识。','bot',sourceHTML('证据不足',lines,'warn')+'<button class="link" onclick="toast(\'已转人工并加入知识缺口\')">转人工</button>');
+    return;
+  }
+  const conf = Math.min(0.98, 0.35 + best.s*0.55);
+  const lines=`来源：<b>${best.k.id}</b>｜${esc(best.k.source)}<br>版本：${best.k.version}｜生效 ${best.k.effective}<br>置信度：${conf.toFixed(2)}｜检索分：${best.s.toFixed(2)}<br>提示：仅规则/投教解释，不构成个性化投资建议。`;
+  logs.push({kind: best.k.risk==='high' ? 'review' : 'answer', q, doc:best.k.id, conf, time:Date.now()}); save();
+  addMsg(best.k.body + '\n\n如涉及下单、账户或资金问题，我可以继续说明办理路径，但不会替你作投资决策。','bot',sourceHTML('已合规回答',lines,'ok'));
+}
+$('send').onclick=()=>{const q=$('q').value.trim(); if(!q)return; addMsg(q,'user'); $('q').value=''; answer(q); renderAll();};
+$('q').addEventListener('keydown',e=>{if(e.key==='Enter')$('send').click();});
+document.querySelectorAll('.chip').forEach(c=>c.onclick=()=>{$('q').value=c.textContent.trim(); $('send').click();});
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));b.classList.add('active');$(b.dataset.tab).classList.add('active'); $('phone').querySelector('.scroll').scrollTop=0;});
+$('addKb').onclick=()=>{const t=$('newTitle').value.trim(), b=$('newBody').value.trim(); if(!t||!b)return toast('请填写标题和正文'); const id='KB-'+String(KB.length+1).padStart(3,'0'); KB.unshift({id,title:t,version:'v0.1',effective:'2026-10-27',source:'运营新增/待审核',risk:$('newRisk').value,status:'待审核',tags:t,body:b}); versions.unshift({doc:id,title:t,action:'提交审核',note:'待合规复核；通过后才可检索',time:'2026-10-27 22:30'}); $('newTitle').value=$('newBody').value=''; save(); renderAll(); toast('已提交审核');};
+window.reviewDoc = id => {const k=KB.find(x=>x.id===id); if(!k)return; k.status='已上线'; k.version='v1.0'; k.source='运营新增/已审核'; versions.unshift({doc:k.id,title:k.title,action:'审核上线',note:'合规复核通过，进入可检索知识库',time:'2026-10-27 22:31'}); save(); renderAll(); toast('已上线，可被检索');};
+function setText(id,v){const n=$(id); if(n)n.textContent=v;}
+function renderKB(){ $('kbList').innerHTML = KB.map(k=>`<div class="card"><div class="row"><b>${esc(k.id)} ${esc(k.title)}</b><span>${statusTag(k.status)}${riskTag(k.risk)}</span></div><div class="muted">${esc(k.version)}｜${esc(k.source)}｜生效 ${esc(k.effective)}</div><p style="font-size:14px;line-height:1.55;margin:10px 0 0">${esc(k.body)}</p>${k.status==='待审核'?'<div style="margin-top:10px"><button class="btn small sub" onclick="reviewDoc(\''+k.id+'\')">合规上线</button></div>':''}</div>`).join(''); }
+function renderOps(){
+  const ans=logs.filter(l=>l.kind==='answer').length, ref=logs.filter(l=>l.kind==='violation').length, hand=logs.filter(l=>l.kind==='gap'||l.kind==='review').length;
+  const gaps={}; logs.filter(l=>l.kind==='gap').forEach(l=>gaps[l.q]=(gaps[l.q]||0)+1);
+  const arr=Object.entries(gaps).sort((a,b)=>b[1]-a[1]);
+  [['kAnswer',ans],['kRefuse',ref],['kHandoff',hand],['kGap',arr.length],['cKAnswer',ans],['cKRefuse',ref],['cKHandoff',hand],['cKGap',arr.length]].forEach(([id,v])=>setText(id,v));
+  const html = arr.length ? arr.map(([q,c])=>`<div class="listitem"><i class="dot warn"></i><div><div style="font-size:13px;font-weight:650">${esc(q)}</div><div class="muted">高频未答 ${c} 次 · 建议补知识</div></div></div>`).join('') : '<p class="muted">暂无待处理告警。试试“明天A股会涨吗”或“私募合格投资者认定”。</p>';
+  $('alerts').innerHTML=html; $('cAlerts').innerHTML=html;
+}
+function renderVer(){const html=versions.map(v=>`<div class="tl"><b style="font-size:13px">${esc(v.doc)}｜${esc(v.title)}</b><div class="muted">${esc(v.time)} · ${esc(v.action)}</div><div style="font-size:12px;color:var(--secondary)">${esc(v.note)}</div></div>`).join(''); $('verList').innerHTML=html; $('cVerList').innerHTML=html;}
+function renderAll(){renderKB();renderOps();renderVer();}
+renderAll(); addMsg('你好，我是投教合规助手。可以解释产品规则、费用、适当性和基础概念；不会荐股、不预测行情、不承诺收益。','bot',sourceHTML('边界说明','角色：投教与规则解释，不是投资顾问。<br>关键事实需来源；无来源不硬答。<br>高风险问题会拒答或转人工。','info'));
+</script>
+</body>
+</html>
